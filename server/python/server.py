@@ -81,6 +81,10 @@ constants = get_constants(
               trained_name=os.getenv(
                             'DISCOVERY_TRAINED_COLLECTION_NAME',
                             'knowledge_base_trained'
+                          ),
+              enrichments_name=os.getenv(
+                            'DISCOVERY_ENRICHMENTS_COLLECTION_NAME',
+                            'knowledge_base_regular'
                           )
             )
 try:
@@ -98,7 +102,11 @@ trained_question_cache = get_questions(
                             constants=constants,
                             question_count=total_questions,
                             feature_type='trained')
-
+enriched_question_cache = get_questions(
+                            discovery=discovery,
+                            constants=constants,
+                            question_count=total_questions,
+                            feature_type='regular')
 
 @app.route('/')
 @limiter.exempt
@@ -109,6 +117,7 @@ def index():
 @app.route('/api/query/<collection_type>', methods=['POST'])
 def query(collection_type):
     query_options = json.loads(request.data)
+    print(query_options)
     query_options['return'] = 'text'
 
     if collection_type == 'passages':
@@ -117,6 +126,9 @@ def query(collection_type):
     # retrieve more results for regular so that we can compare original rank
     if collection_type == 'regular':
         query_options['count'] = 100
+
+    if collection_type == 'enrichments':
+        query_options['aggregation'] = ''
 
     return jsonify(
               discovery.query(

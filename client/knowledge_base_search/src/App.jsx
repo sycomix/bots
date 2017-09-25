@@ -7,6 +7,7 @@ import FeatureSelect from './containers/SearchContainer/FeatureSelect';
 import QuestionBarContainer from './containers/QuestionBarContainer/QuestionBarContainer';
 import PassagesContainer from './containers/PassagesContainer/PassagesContainer';
 import TrainingContainer from './containers/TrainingContainer/TrainingContainer';
+import EnrichmentsContainer from './containers/EnrichmentsContainer/EnrichmentsContainer';
 import ErrorContainer from './containers/ErrorContainer/ErrorContainer';
 import ViewAllContainer from './containers/ViewAllContainer/ViewAllContainer';
 import links from './utils/links';
@@ -125,8 +126,10 @@ class App extends Component {
 
     if (selectedFeature === FeatureSelect.featureTypes.PASSAGES.value) {
       this.handlePassageSearch(input);
-    } else {
+    } else if (selectedFeature === FeatureSelect.featureTypes.TRAINED.value) {
       this.handleTrainedSearch(input);
+    } else if (selectedFeature === FeatureSelect.featureTypes.ENRICHMENTS.value) {
+      this.handleEnrichedSearch(input);
     }
   }
 
@@ -181,6 +184,32 @@ class App extends Component {
     });
   }
 
+  handleEnrichedSearch = (input) => {
+    Promise.all([
+      query(FeatureSelect.featureTypes.ENRICHMENTS.value, { natural_language_query: input }),
+      query('regular', { natural_language_query: input }),
+    ]).then((responses) => {
+      const enrichedResponse = responses[0];
+      const regularResponse = responses[1];
+      const resultsError = enrichedResponse.error || regularResponse.error;
+
+      if (resultsError) {
+        this.setState({
+          fetchingResults: false,
+          resultsFetched: true,
+          resultsError,
+        });
+      } else {
+        this.setState({
+          fetchingResults: false,
+          resultsFetched: true,
+          results: regularResponse,
+          enrichedResults: enrichedResponse,
+        });
+      }
+    });
+  }
+
   handleQuestionClick = (queryString) => {
     const { presetQueries, offset } = this.state;
     const questionIndex = presetQueries.findIndex(presetQuery =>
@@ -210,6 +239,7 @@ class App extends Component {
     this.setState({
       results: [],
       trainedResults: [],
+      enrichedResults: [],
       resultsFetched: false,
       selectedFeature,
     });
@@ -225,11 +255,12 @@ class App extends Component {
   }
 
   renderFeature() {
-    const { PASSAGES, TRAINED } = FeatureSelect.featureTypes;
+    const { PASSAGES, TRAINED, ENRICHMENTS } = FeatureSelect.featureTypes;
     const {
       selectedFeature,
       results,
       trainedResults,
+      enrichedResults,
       searchContainerHeight,
     } = this.state;
 
@@ -251,6 +282,15 @@ class App extends Component {
             searchContainerHeight={searchContainerHeight}
           />
         );
+      case ENRICHMENTS.value:
+      return (
+        <EnrichmentsContainer
+          key="enrichments_container"
+          regularResults={results}
+          enrichedResults={enrichedResults}
+          searchContainerHeight={searchContainerHeight}
+        />
+      );
       default:
         return null;
     }

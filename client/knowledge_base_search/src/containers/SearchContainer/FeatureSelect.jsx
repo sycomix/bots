@@ -16,6 +16,10 @@ class FeatureSelect extends Component {
       value: 'trained',
       text: 'Relevancy Training',
     },
+    ENRICHMENTS: {
+      value: 'enrichments',
+      text: 'Enrichments'
+    }
   }
 
   isSelected(value) {

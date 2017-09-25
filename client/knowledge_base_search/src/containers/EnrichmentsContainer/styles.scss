@@ -1,0 +1,48 @@
+@import 'watson-ui-components/dist/lib/core/_index';
+
+.enrichments {
+  display: flex;
+  &--container, &--description {
+    max-width: 100%;
+  }
+  &--results {
+    width: 80%;
+    padding: 0 3rem;
+  }
+  &--result {
+    &:first-child {
+      padding-top: 1.5rem;
+    }
+  }
+  &-sidebar {
+    &--base {
+      background-color: color('white', 40);
+      width: 20%;
+      margin-top: -3rem;
+      margin-bottom: -4rem;
+      padding: 2rem;
+    }
+    &--hr {
+      margin: 1rem -2rem;
+    }
+    &--title {
+      font-weight: 400;
+      font-size: 1rem;
+    }
+  }
+  &--button {
+    padding: 0.2rem 0;
+    border: 0px;
+    color: color('teal', 40);
+    font-size: 0.9rem;
+    font-weight: 100;
+    &.first-button {
+      padding-top: 0.7rem;
+    }
+    &-count {
+      font-size: 0.7rem;
+      color: color('gray', 50);
+      margin-left: 0.4rem;
+    }
+  }
+}
