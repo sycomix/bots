@@ -41,6 +41,7 @@ class QuestionBarContainer extends Component {
       isFetchingResults,
       onQuestionClick,
       offset,
+      selectedFeature,
     } = this.props;
 
     return (
@@ -70,7 +71,7 @@ class QuestionBarContainer extends Component {
               onClick={() => { onQuestionClick(query.question); }}
             >
               { query.question }
-              { query.is_training_query && (
+              { query.is_training_query && selectedFeature === 'trained' && (
                 <span title="training question" className="question_bar--train" />
               )
               }

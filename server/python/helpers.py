@@ -4,7 +4,8 @@ def get_constants(
       discovery,
       passages_name=None,
       regular_name=None,
-      trained_name=None):
+      trained_name=None,
+      enrichments_name=None):
     """
     Returns a dict containing environment and collection ids with the format:
     {
@@ -44,6 +45,14 @@ def get_constants(
 
     if not(trained_collection_id == ''):
         constants['collection_id']['trained'] = trained_collection_id
+
+    enrichments_collection_id = find_collection_id(
+                              collections_response,
+                              enrichments_name
+                            )
+
+    if not(enrichments_collection_id == ''):
+        constants['collection_id']['enrichments'] = enrichments_collection_id
 
     return constants
 

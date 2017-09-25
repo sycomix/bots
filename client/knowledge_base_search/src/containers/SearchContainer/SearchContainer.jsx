@@ -74,6 +74,7 @@ class SearchContainer extends Component {
           onQuestionClick={onQuestionClick}
           presetQueries={presetQueries}
           isFetchingResults={isFetchingResults}
+          selectedFeature={selectedFeature}
         />
         <div className="question_bar--bottom">
           { selectedFeature === 'trained' ?
