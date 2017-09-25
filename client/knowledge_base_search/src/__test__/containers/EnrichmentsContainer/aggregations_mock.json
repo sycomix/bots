@@ -1,0 +1,103 @@
+{
+  "matching_results": 4837735,
+  "aggregations": [
+    {
+      "type": "term",
+      "field": "enriched_text.keywords.text",
+      "count": 3,
+      "results": [
+        {
+          "key": "company",
+          "matching_results": 357040
+        },
+        {
+          "key": "shares",
+          "matching_results": 346871
+        },
+        {
+          "key": "people",
+          "matching_results": 276715
+        }
+      ]
+    },
+    {
+      "type": "term",
+      "field": "enriched_text.sentiment.document.label",
+      "count": 3,
+      "results": [
+        {
+          "key": "positive",
+          "matching_results": 2841187
+        },
+        {
+          "key": "negative",
+          "matching_results": 1633542
+        },
+        {
+          "key": "neutral",
+          "matching_results": 362964
+        }
+      ]
+    },
+    {
+      "type": "term",
+      "field": "enriched_text.concepts.text",
+      "count": 3,
+      "results": [
+        {
+          "key": "Stock market",
+          "matching_results": 529933
+        },
+        {
+          "key": "Stock",
+          "matching_results": 519045
+        },
+        {
+          "key": "United States",
+          "matching_results": 458042
+        }
+      ]
+    },
+    {
+      "type": "term",
+      "field": "enriched_text.entities.text",
+      "count": 3,
+      "results": [
+        {
+          "key": "U.S.",
+          "matching_results": 381592
+        },
+        {
+          "key": "United States",
+          "matching_results": 355812
+        },
+        {
+          "key": "Reuters",
+          "matching_results": 282975
+        }
+      ]
+    },
+    {
+      "type": "term",
+      "field": "enriched_text.categories.label",
+      "count": 3,
+      "results": [
+        {
+          "key": "\/business and industrial",
+          "matching_results": 2160209
+        },
+        {
+          "key": "\/finance\/investing\/stocks",
+          "matching_results": 471406
+        },
+        {
+          "key": "\/technology and computing",
+          "matching_results": 373161
+        }
+      ]
+    }
+  ],
+  "results": [
+
+  ]
+}
