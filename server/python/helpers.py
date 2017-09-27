@@ -86,9 +86,11 @@ def get_questions(discovery, constants, question_count, feature_type):
      'count': 0
     }
 
+    feature_type_buffer = 'regular' if feature_type == 'enriched' else feature_type
+
     response = discovery.query(
                   environment_id=constants['environment_id'],
-                  collection_id=constants['collection_id'][feature_type],
+                  collection_id=constants['collection_id'][feature_type_buffer],
                   query_options=query_options
                 )
 

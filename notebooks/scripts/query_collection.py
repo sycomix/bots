@@ -19,6 +19,8 @@ REGULAR_COLLECTION_NAME = os.getenv('DISCOVERY_REGULAR_COLLECTION_NAME',
                                     'knowledge_base_regular')
 TRAINED_COLLECTION_NAME = os.getenv('DISCOVERY_TRAINED_COLLECTION_NAME',
                                     'knowledge_base_trained')
+ENRICHED_COLLECTION_NAME = os.getenv('DISCOVERY_ENRICHED_COLLECTION_NAME',
+                                    'knowledge_base_regular')
 
 # please provide the collection desired
 DESIRED_COLLECTION_NAME = REGULAR_COLLECTION_NAME
@@ -37,6 +39,7 @@ discovery_constants = get_constants(
                         discovery,
                         regular_name=REGULAR_COLLECTION_NAME,
                         trained_name=TRAINED_COLLECTION_NAME,
+                        enriched_name=REGULAR_COLLECTION_NAME,
                       )
 COLLECTION_ID = discovery_constants['collection_id']['regular']
 if DESIRED_COLLECTION_NAME == TRAINED_COLLECTION_NAME:

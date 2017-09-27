@@ -205,7 +205,6 @@ class App extends Component {
       aggregation: aggregationQuery,
     })
       .then((enrichedResponse) => {
-        console.log(enrichedResponse);
         const resultsError = enrichedResponse.error;
         if (resultsError) {
           this.setState({
@@ -218,6 +217,7 @@ class App extends Component {
             fetchingResults: false,
             resultsFetched: true,
             enrichedResults: enrichedResponse,
+            aggregations: enrichedResponse.aggregations
           });
         }
       });
@@ -225,9 +225,11 @@ class App extends Component {
 
   handleEnrichmentFilterClick = (filter) => {
     const { search_input } = this.state;
+    const aggregationQuery = this.buildAggregationQuery();
     query(FeatureSelect.featureTypes.ENRICHMENTS.value,
       {
         natural_language_query: search_input,
+        aggregation: aggregationQuery,
         filter,
       })
       .then((enrichedResponse) => {
@@ -302,6 +304,7 @@ class App extends Component {
       enrichedResults,
       searchContainerHeight,
       fields,
+      aggregations,
     } = this.state;
 
     switch (selectedFeature) {
@@ -331,6 +334,7 @@ class App extends Component {
             searchContainerHeight={searchContainerHeight}
             onEnrichmentFilterClick={this.handleEnrichmentFilterClick}
             fields={fields}
+            aggregations={aggregations}
           />
         );
       default:

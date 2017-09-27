@@ -64,7 +64,8 @@ retrieve the following:
   collection_id: {
     passages: passages_id,
     regular: regular_id,
-    trained: trained_id
+    trained: trained_id,
+    enriched: regular_id
   }
 }
 """
@@ -106,7 +107,7 @@ enriched_question_cache = get_questions(
                             discovery=discovery,
                             constants=constants,
                             question_count=total_questions,
-                            feature_type='regular')
+                            feature_type='enriched')
 
 @app.route('/')
 @limiter.exempt
@@ -117,7 +118,6 @@ def index():
 @app.route('/api/query/<collection_type>', methods=['POST'])
 def query(collection_type):
     query_options = json.loads(request.data)
-    print(query_options)
     query_options['return'] = 'text'
 
     if collection_type == 'passages':
@@ -126,9 +126,6 @@ def query(collection_type):
     # retrieve more results for regular so that we can compare original rank
     if collection_type == 'regular':
         query_options['count'] = 100
-
-    if collection_type == 'enrichments':
-        query_options['aggregation'] = ''
 
     return jsonify(
               discovery.query(
@@ -143,8 +140,10 @@ def query(collection_type):
 def questions(feature_type):
     if feature_type == 'passages':
         return jsonify(passages_question_cache)
-    else:
+    elif feature_type == 'trained':
         return jsonify(trained_question_cache)
+    else:
+        return jsonify(enriched_question_cache)
 
 
 @app.errorhandler(429)
