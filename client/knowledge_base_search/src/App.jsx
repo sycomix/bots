@@ -185,13 +185,9 @@ class App extends Component {
   }
 
   handleEnrichedSearch = (input) => {
-    Promise.all([
-      query(FeatureSelect.featureTypes.ENRICHMENTS.value, { natural_language_query: input }),
-      query('regular', { natural_language_query: input }),
-    ]).then((responses) => {
-      const enrichedResponse = responses[0];
-      const regularResponse = responses[1];
-      const resultsError = enrichedResponse.error || regularResponse.error;
+    query(FeatureSelect.featureTypes.ENRICHMENTS.value, { natural_language_query: input })
+      .then((enrichedResponse) => {
+      const resultsError = enrichedResponse.error;
 
       if (resultsError) {
         this.setState({
@@ -203,7 +199,32 @@ class App extends Component {
         this.setState({
           fetchingResults: false,
           resultsFetched: true,
-          results: regularResponse,
+          enrichedResults: enrichedResponse,
+        });
+      }
+    });
+  }
+
+  handleEnrichmentFilterClick = (filter) => {
+    console.log('filter: ', filter);
+    query(FeatureSelect.featureTypes.ENRICHMENTS.value,
+      {
+        natural_language_query: this.state.search_input,
+        filter: filter,
+      })
+      .then((enrichedResponse) => {
+      const resultsError = enrichedResponse.error;
+
+      if (resultsError) {
+        this.setState({
+          fetchingResults: false,
+          resultsFetched: true,
+          resultsError,
+        });
+      } else {
+        this.setState({
+          fetchingResults: false,
+          resultsFetched: true,
           enrichedResults: enrichedResponse,
         });
       }
@@ -289,6 +310,7 @@ class App extends Component {
           regularResults={results}
           enrichedResults={enrichedResults}
           searchContainerHeight={searchContainerHeight}
+          onEnrichmentFilterClick={this.handleEnrichmentFilterClick}
         />
       );
       default:

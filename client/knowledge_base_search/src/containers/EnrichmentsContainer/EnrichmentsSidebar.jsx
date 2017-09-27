@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { array } from 'prop-types';
+import { array, func } from 'prop-types';
 import classNames from 'classnames';
 import './styles.css';
 
@@ -9,28 +9,33 @@ class EnrichmentsSidebar extends Component {
   }
 
   formatTitle(agg_type) {
-    if(agg_type === 'currentFilters') {
-      return('Filtering by');
-    }
-    else {
-      return this.capitalizeFirstLetter(agg_type);
-    }
+    return this.capitalizeFirstLetter(agg_type);
   }
 
-  getAggregationResultsForType(agg_type) {
+  fieldForAggType(agg_type) {
     const fields = {
       entities: 'enriched_text.entities.text',
       concepts: 'enriched_text.concepts.text',
       categories: 'enriched_text.categories.label',
       sentiments: 'enriched_text.sentiment.document.label'
     };
+    return fields[agg_type];
+  }
+
+  getAggregationResultsForType(agg_type) {
     const aggregation = this.props.aggregations.find((aggregation) => {
-      return aggregation.field === fields[agg_type]
+      return aggregation.field === this.fieldForAggType(agg_type)
     });
     if(aggregation) {
       return aggregation.results;
     }
     return null;
+  }
+
+  handleFilterClick(agg_type, key) {
+    const { onEnrichmentFilterClick } = this.props;
+    const filterString = this.fieldForAggType(agg_type) + ':"' + key + '"';
+    return onEnrichmentFilterClick(filterString);
   }
 
   renderAggregationType(agg_type) {
@@ -52,6 +57,7 @@ class EnrichmentsSidebar extends Component {
                    'first-button': i === 0,
                  })
                }
+               onClick={this.handleFilterClick.bind(this, agg_type, enrichment.key)}
                >
                 { this.capitalizeFirstLetter(enrichment.key) }
               </button>
@@ -92,8 +98,8 @@ class EnrichmentsSidebar extends Component {
 }
 
 EnrichmentsSidebar.propTypes = {
-  currentFilters: array.isRequired,
   aggregations: array.isRequired,
+  onEnrichmentFilterClick: func.isRequired,
 };
 
 export default EnrichmentsSidebar;
