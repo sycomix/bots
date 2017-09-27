@@ -48,12 +48,12 @@ class EnrichmentsContainer extends Component {
   }
 
   hasMoreResults() {
-    const { regularResults, enrichedResults, maxRegularResults } = this.props;
+    const {
+      enrichedResults,
+    } = this.props;
     const totalResultsShown = this.state.totalResultsShown;
-    const totalRegularResults = Math.min(regularResults.results.length, maxRegularResults);
 
-    return totalRegularResults > totalResultsShown ||
-           enrichedResults.results.length > totalResultsShown;
+    return enrichedResults.results.length > totalResultsShown;
   }
 
   handleMoreResults = () => {
