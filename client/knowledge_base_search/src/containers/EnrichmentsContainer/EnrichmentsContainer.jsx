@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { string, number, arrayOf, shape } from 'prop-types';
+import { string, number, arrayOf, shape, func } from 'prop-types';
 import { scroller, Element } from 'react-scroll';
 import EnrichmentsSidebar from './EnrichmentsSidebar';
 import NoResults from '../../views/NoResults/NoResults';
@@ -10,12 +10,8 @@ import './styles.css';
 import '../../__test__/containers/EnrichmentsContainer/aggregations_mock.json'
 
 class EnrichmentsContainer extends Component {
-  static getKey(regularResult, enrichedResult) {
-    if (regularResult && enrichedResult) {
-      return regularResult.id + enrichedResult.id;
-    } else if (regularResult) {
-      return regularResult.id;
-    } else if (enrichedResult) {
+  static getKey(enrichedResult) {
+    if (enrichedResult) {
       return enrichedResult.id;
     }
 
@@ -37,20 +33,14 @@ class EnrichmentsContainer extends Component {
   }
 
   getEnrichedResultWithOriginalRank(rank) {
-    const { regularResults, enrichedResults } = this.props;
+    const { enrichedResults } = this.props;
     const enrichedResult = enrichedResults.results[rank];
-    const enrichedResultId = enrichedResult.id;
-    const originalIndex = regularResults.results.findIndex(result => result.id === enrichedResultId);
 
-    return Object.assign({}, enrichedResult, {
-      originalRank: originalIndex + 1,
-    });
+    return enrichedResult;
   }
 
   hasMoreResults() {
-    const {
-      enrichedResults,
-    } = this.props;
+    const { enrichedResults } = this.props;
     const totalResultsShown = this.state.totalResultsShown;
 
     return enrichedResults.results.length > totalResultsShown;
@@ -61,12 +51,16 @@ class EnrichmentsContainer extends Component {
   }
 
   render() {
-    const { regularResults, enrichedResults, maxRegularResults } = this.props;
+    const { 
+      enrichedResults,
+      maxRegularResults,
+      onEnrichmentFilterClick,
+    } = this.props;
     const { totalResultsShown } = this.state;
 const maxResults = Math.max(maxRegularResults, enrichedResults.results.length);
 
 const aggregations = [
-  {
+      {
         "type": "term",
         "field": "enriched_text.keywords.text",
         "count": 100,
@@ -1718,11 +1712,11 @@ const aggregations = [
     return (
       <Element name="scroll_to_results">
         {
-          regularResults.matching_results > 0 || enrichedResults.matching_results > 0
+          enrichedResults.matching_results > 0
             ? (
               <div className='enrichments'>
                 <EnrichmentsSidebar
-                  currentFilters={[1,2]}
+                  onEnrichmentFilterClick={onEnrichmentFilterClick}
                   aggregations={aggregations}
                 />
                 <div className='enrichments--results'>
@@ -1767,12 +1761,6 @@ const aggregations = [
 }
 
 EnrichmentsContainer.propTypes = {
-  regularResults: shape({
-    matching_results: number.isRequired,
-    results: arrayOf(shape({
-      text: string.isRequired,
-    })).isRequired,
-  }).isRequired,
   enrichedResults: shape({
     matching_results: number.isRequired,
     results: arrayOf(shape({
@@ -1781,6 +1769,7 @@ EnrichmentsContainer.propTypes = {
   }).isRequired,
   searchContainerHeight: number.isRequired,
   maxRegularResults: number.isRequired,
+  onEnrichmentFilterClick: func.isRequired,
 };
 
 EnrichmentsContainer.defaultProps = {
