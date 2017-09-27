@@ -44,6 +44,12 @@ class App extends Component {
       presetQueries: [],
       offset: 0,
       selectedFeature: FeatureSelect.featureTypes.PASSAGES.value,
+      fields: {
+        entities: 'enriched_text.entities.text',
+        concepts: 'enriched_text.concepts.text',
+        categories: 'enriched_text.categories.label',
+        sentiments: 'enriched_text.sentiment.document.label',
+      },
     };
   }
 
@@ -184,51 +190,63 @@ class App extends Component {
     });
   }
 
-  handleEnrichedSearch = (input) => {
-    query(FeatureSelect.featureTypes.ENRICHMENTS.value, { natural_language_query: input })
-      .then((enrichedResponse) => {
-      const resultsError = enrichedResponse.error;
+  buildAggregationQuery = () => {
+    const { fields } = this.state;
+    return (
+      `[term(${fields.categories},count:10),term(${fields.concepts},count:10),term(${fields.entities},count:10),term(${fields.sentiments},count:10)]`
+    );
+  }
 
-      if (resultsError) {
-        this.setState({
-          fetchingResults: false,
-          resultsFetched: true,
-          resultsError,
-        });
-      } else {
-        this.setState({
-          fetchingResults: false,
-          resultsFetched: true,
-          enrichedResults: enrichedResponse,
-        });
-      }
-    });
+  handleEnrichedSearch = (input) => {
+    const aggregationQuery = this.buildAggregationQuery();
+
+    query(FeatureSelect.featureTypes.ENRICHMENTS.value, {
+      natural_language_query: input,
+      aggregation: aggregationQuery,
+    })
+      .then((enrichedResponse) => {
+        console.log(enrichedResponse);
+        const resultsError = enrichedResponse.error;
+        if (resultsError) {
+          this.setState({
+            fetchingResults: false,
+            resultsFetched: true,
+            resultsError,
+          });
+        } else {
+          this.setState({
+            fetchingResults: false,
+            resultsFetched: true,
+            enrichedResults: enrichedResponse,
+          });
+        }
+      });
   }
 
   handleEnrichmentFilterClick = (filter) => {
-    console.log('filter: ', filter);
+    const { search_input } = this.state;
     query(FeatureSelect.featureTypes.ENRICHMENTS.value,
       {
-        natural_language_query: this.state.search_input,
-        filter: filter,
+        natural_language_query: search_input,
+        filter,
       })
       .then((enrichedResponse) => {
-      const resultsError = enrichedResponse.error;
+        const resultsError = enrichedResponse.error;
 
-      if (resultsError) {
-        this.setState({
-          fetchingResults: false,
-          resultsFetched: true,
-          resultsError,
-        });
-      } else {
-        this.setState({
-          fetchingResults: false,
-          resultsFetched: true,
-          enrichedResults: enrichedResponse,
-        });
-      }
-    });
+        if (resultsError) {
+          this.setState({
+            fetchingResults: false,
+            resultsFetched: true,
+            resultsError,
+          });
+        } else {
+          this.setState({
+            fetchingResults: false,
+            resultsFetched: true,
+            enrichedResults: enrichedResponse,
+          });
+        }
+      });
   }
 
   handleQuestionClick = (queryString) => {
@@ -283,6 +301,7 @@ class App extends Component {
       trainedResults,
       enrichedResults,
       searchContainerHeight,
+      fields,
     } = this.state;
 
     switch (selectedFeature) {
@@ -304,15 +323,16 @@ class App extends Component {
           />
         );
       case ENRICHMENTS.value:
-      return (
-        <EnrichmentsContainer
-          key="enrichments_container"
-          regularResults={results}
-          enrichedResults={enrichedResults}
-          searchContainerHeight={searchContainerHeight}
-          onEnrichmentFilterClick={this.handleEnrichmentFilterClick}
-        />
-      );
+        return (
+          <EnrichmentsContainer
+            key="enrichments_container"
+            regularResults={results}
+            enrichedResults={enrichedResults}
+            searchContainerHeight={searchContainerHeight}
+            onEnrichmentFilterClick={this.handleEnrichmentFilterClick}
+            fields={fields}
+          />
+        );
       default:
         return null;
     }

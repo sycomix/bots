@@ -105,6 +105,7 @@ QuestionBarContainer.propTypes = {
   onQuestionClick: func.isRequired,
   onOffsetUpdate: func.isRequired,
   offset: number.isRequired,
+  selectedFeature: string.isRequired,
 };
 
 QuestionBarContainer.defaultProps = {

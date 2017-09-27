@@ -18,8 +18,8 @@ class FeatureSelect extends Component {
     },
     ENRICHMENTS: {
       value: 'enrichments',
-      text: 'Enrichments'
-    }
+      text: 'Enrichments',
+    },
   }
 
   isSelected(value) {
