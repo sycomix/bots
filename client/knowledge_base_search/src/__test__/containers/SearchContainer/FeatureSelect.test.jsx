@@ -14,17 +14,23 @@ describe('<FeatureSelect />', () => {
   const propsWithRelevancy = Object.assign({}, props, {
     selectedFeature: FeatureSelect.featureTypes.TRAINED.value,
   });
+  const propsWithEnrichments = Object.assign({}, props, {
+    selectedFeature: FeatureSelect.featureTypes.ENRICHMENTS.value,
+  });
 
   const passagesTabLocation = 0;
   const relevancyTabLocation = 1;
+  const enrichmentsTabLocation = 2;
   let passagesTab;
   let relevancyTab;
+  let enrichmentsTab;
   let highlightedFeature;
 
   function renderWithProps(propSet) {
     wrapper = shallow(<FeatureSelect {...propSet} />);
     passagesTab = wrapper.find('.feature_select--list_button').at(passagesTabLocation);
     relevancyTab = wrapper.find('.feature_select--list_button').at(relevancyTabLocation);
+    enrichmentsTab = wrapper.find('.feature_select--list_button').at(enrichmentsTabLocation);
     highlightedFeature = wrapper.find('.feature_select--list_button--active');
   }
 
@@ -42,10 +48,10 @@ describe('<FeatureSelect />', () => {
       ReactDOM.render(<FeatureSelect {...props} />, div);
     });
 
-    it('has two features', () => {
+    it('has three features', () => {
       renderWithProps(props);
 
-      expect(wrapper.find('.feature_select--list_item')).toHaveLength(2);
+      expect(wrapper.find('.feature_select--list_item')).toHaveLength(3);
     });
   });
 
@@ -62,6 +68,7 @@ describe('<FeatureSelect />', () => {
       it('disables tab selection for passages only', () => {
         expect(passagesTab.props().disabled).toBe(true);
         expect(relevancyTab.props().disabled).toBe(false);
+        expect(enrichmentsTab.props().disabled).toBe(false);
       });
     });
 
@@ -77,6 +84,23 @@ describe('<FeatureSelect />', () => {
       it('disables tab selection for relevance only', () => {
         expect(passagesTab.props().disabled).toBe(false);
         expect(relevancyTab.props().disabled).toBe(true);
+        expect(enrichmentsTab.props().disabled).toBe(false);
+      });
+    });
+
+    describe('when the selectedFeature is "Enrichments"', () => {
+      beforeEach(() => {
+        renderWithProps(propsWithEnrichments);
+      });
+
+      it('has "Enrichments" highlighted', () => {
+        expect(highlightedFeature.text()).toEqual(FeatureSelect.featureTypes.ENRICHMENTS.text);
+      });
+
+      it('disables tab selection for enrichments only', () => {
+        expect(passagesTab.props().disabled).toBe(false);
+        expect(relevancyTab.props().disabled).toBe(false);
+        expect(enrichmentsTab.props().disabled).toBe(true);
       });
     });
   });
@@ -111,6 +135,21 @@ describe('<FeatureSelect />', () => {
         });
       });
     });
+
+    describe('when the enrichments feature is clicked', () => {
+      beforeEach(() => {
+        renderWithProps(props);
+        clickTab(wrapper, enrichmentsTab);
+      });
+
+      it('calls onSelect with "enrichments"', () => {
+        expect(onFeatureSelectMock).toBeCalledWith({
+          target: {
+            value: FeatureSelect.featureTypes.ENRICHMENTS.value,
+          },
+        });
+      });
+    });
   });
 
   describe('when the app is fetching results', () => {
@@ -125,6 +164,7 @@ describe('<FeatureSelect />', () => {
     it('disables tab selection', () => {
       expect(passagesTab.props().disabled).toBe(true);
       expect(relevancyTab.props().disabled).toBe(true);
+      expect(enrichmentsTab.props().disabled).toBe(true);
     });
   });
 });
