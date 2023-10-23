@@ -47,7 +47,7 @@ def upload_training_doc(training_json, environment_id, collection_id):
 
 
 def upload_training_data(training_directory):
-    print("Training directory: %s" % training_directory)
+    print(f"Training directory: {training_directory}")
     files = glob.glob(os.path.join(training_directory, '*.json'))
     total_files = len(files)
     print("Number of files to process: %d" % total_files)
@@ -92,5 +92,5 @@ discovery_constants = get_constants(
                       )
 print('Constants retrieved!')
 print(discovery_constants)
-print("Log file located at: %s" % LOG_FILE_PATH)
+print(f"Log file located at: {LOG_FILE_PATH}")
 upload_training_data(TRAINING_DIRECTORY)

@@ -137,9 +137,10 @@ def questions(feature_type):
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
-    return jsonify(
-            error="API Rate Limit exceeded: %s" % e.description,
-            code=429), 429
+    return (
+        jsonify(error=f"API Rate Limit exceeded: {e.description}", code=429),
+        429,
+    )
 
 
 @app.errorhandler(Exception)
@@ -155,7 +156,7 @@ def handle_error(e):
 
 if __name__ == '__main__':
     # If we are in the Bluemix environment
-    PRODUCTION = True if os.getenv('VCAP_APPLICATION') else False
+    PRODUCTION = bool(os.getenv('VCAP_APPLICATION'))
     # set port to 0.0.0.0, otherwise set it to localhost (127.0.0.1)
     HOST = '0.0.0.0' if PRODUCTION else '127.0.0.1'
     # Get port from the Bluemix environment, or default to 5000

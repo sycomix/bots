@@ -18,8 +18,7 @@ def get_constants(
     """
     environments_response = discovery.get_environments()
     environment_id = find_byod_environment_id(environments_response)
-    constants = {'environment_id': environment_id}
-    constants['collection_id'] = {}
+    constants = {'environment_id': environment_id, 'collection_id': {}}
     collections_response = discovery.list_collections(
                             environment_id=environment_id
                             )
@@ -27,14 +26,14 @@ def get_constants(
                               collections_response,
                               passages_name
                             )
-    if not(passages_collection_id == ''):
+    if passages_collection_id != '':
         constants['collection_id']['passages'] = passages_collection_id
 
     regular_collection_id = find_collection_id(
                               collections_response,
                               regular_name
                             )
-    if not(regular_collection_id == ''):
+    if regular_collection_id != '':
         constants['collection_id']['regular'] = regular_collection_id
 
     trained_collection_id = find_collection_id(
@@ -42,7 +41,7 @@ def get_constants(
                               trained_name
                             )
 
-    if not(trained_collection_id == ''):
+    if trained_collection_id != '':
         constants['collection_id']['trained'] = trained_collection_id
 
     return constants
@@ -54,7 +53,7 @@ def find_byod_environment_id(environments_response):
               in environments_response['environments']
               if not(environment['read_only'])]
 
-    return '' if len(my_env) == 0 else my_env[0]
+    return '' if not my_env else my_env[0]
 
 
 def find_collection_id(collections_response, collection_name):
@@ -66,7 +65,7 @@ def find_collection_id(collections_response, collection_name):
                in collections_response['collections']
                if collection['name'] == collection_name]
 
-    return '' if len(my_coll) == 0 else my_coll[0]
+    return '' if not my_coll else my_coll[0]
 
 
 def get_questions(discovery, constants, question_count, feature_type):

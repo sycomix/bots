@@ -67,7 +67,7 @@ def upload_document(file_object, environment_id, collection_id, iteration=0):
 
 
 def upload_documents(docs_directory):
-    print("Docs directory: %s" % docs_directory)
+    print(f"Docs directory: {docs_directory}")
     files = glob.glob(os.path.join(docs_directory, '*.json'))
     if DOC_UPLOAD_LIMIT > 0:
         files = files[:DOC_UPLOAD_LIMIT]
@@ -126,5 +126,5 @@ discovery_constants = get_constants(
                       )
 print('Constants retrieved!')
 print(discovery_constants)
-print("Log file located at: %s" % LOG_FILE_PATH)
+print(f"Log file located at: {LOG_FILE_PATH}")
 upload_documents(DOCS_DIRECTORY)

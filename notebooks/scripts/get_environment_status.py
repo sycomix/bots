@@ -22,7 +22,7 @@ def getEnvironmentStatusMessage(output):
 environments_response = discovery.get_environments()
 ENVIRONMENT_ID = find_byod_environment_id(environments_response)
 
-if not(ENVIRONMENT_ID == ''):
+if ENVIRONMENT_ID != '':
     # Running command that checks the status of your environment
     output = discovery.get_environment(environment_id=ENVIRONMENT_ID)
     while output.get('status') == 'pending':
