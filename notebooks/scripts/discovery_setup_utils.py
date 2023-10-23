@@ -53,12 +53,12 @@ def makeSurePathExists(path):
 
 
 def write_progress(items_complete, total_items, previous_complete_percent=0):
-    symbol = '='
-    progress_symbols = 50
     new_complete_percent = int(items_complete * 100 / total_items)
-    complete = int(items_complete * progress_symbols / total_items)
     # don't overload the write buffer
     if new_complete_percent > previous_complete_percent:
+        symbol = '='
+        progress_symbols = 50
+        complete = int(items_complete * progress_symbols / total_items)
         sys.stdout.write("\r[%s%s] %d%%" % (symbol * complete,
                                             ' ' * (progress_symbols-complete),
                                             new_complete_percent))

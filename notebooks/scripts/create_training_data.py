@@ -50,11 +50,11 @@ def genId(filename):
 
 
 def genFilename(id):
-    return "%s_%s.json" % (DATA_TYPE, str(id))
+    return f"{DATA_TYPE}_{str(id)}.json"
 
 
 def genTrainingFilename(id):
-    return "train_%s.json" % str(id)
+    return f"train_{str(id)}.json"
 
 
 print('Getting Posts...')
@@ -120,7 +120,7 @@ for document in train_documents:
     not_enough_answers = len(answers) < ANSWERS_NEEDED
     if not_enough_answers or question_too_long:
         questions_skipped += 1
-        print ("skipping question: '%s'" % question)
+        print(f"skipping question: '{question}'")
         print ("answers length: %d" % len(answers))
         print ("question words: %d" % len(question_words))
         continue

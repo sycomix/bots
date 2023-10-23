@@ -42,11 +42,11 @@ def genId(filename):
 
 
 def genFilename(id):
-    return "%s_%s.json" % (DATA_TYPE, str(id))
+    return f"{DATA_TYPE}_{str(id)}.json"
 
 
 def genTrainingFilename(id):
-    return "train_%s.json" % str(id)
+    return f"train_{str(id)}.json"
 
 
 def getUsers(usersXML, OUTPUT_DIR):
@@ -216,7 +216,7 @@ def handleQuestion(documents, question, OUTPUT_DIR):
                     'answer_metadata': answer_metadata,
                     'author_metadata': extractAuthorMetadata(current_document),
                     'user_metadata': skipped_answer.get('user_metadata')}
-            print('writing a skipped answer ID: ' + answer_id)
+            print(f'writing a skipped answer ID: {answer_id}')
             writeAnswerFile(file_name, item, OUTPUT_DIR)
 
     else:
@@ -351,4 +351,4 @@ print('Users loaded')
 
 print('Begin writing documents...')
 writeDocuments(postsXML, votesDict, usersDict, OUTPUT_DIR)
-print("Documents written to %s" % OUTPUT_DIR)
+print(f"Documents written to {OUTPUT_DIR}")

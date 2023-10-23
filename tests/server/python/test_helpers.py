@@ -31,8 +31,7 @@ class TestHelpers(unittest.TestCase):
     @patch('watson_developer_cloud.DiscoveryV1')
     def test_questions_passages(self, discovery):
         question_count = 5000
-        agg = 'term(question.title,count:%s)'
-        expected_agg = agg % str(question_count)
+        expected_agg = f'term(question.title,count:{question_count})'
         expected_query_opts = {
           'aggregation': expected_agg,
           'count': 0
@@ -77,8 +76,7 @@ class TestHelpers(unittest.TestCase):
     @patch('watson_developer_cloud.DiscoveryV1')
     def test_questions_trained(self, discovery):
         question_count = 5000
-        agg = 'term(question.title,count:%s)'
-        expected_agg = agg % str(question_count)
+        expected_agg = f'term(question.title,count:{question_count})'
         expected_query_opts = {
           'aggregation': expected_agg,
           'count': 0
